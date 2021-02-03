@@ -83,6 +83,31 @@ int lua_execute(Byte *pc) {
                     tag(top) = T_STRING; svalue(top++) = lua_constant[w];
                 }
                 break;
+            case PUSHLOCAL0: *top++ = *(base + 0); break;
+            case PUSHLOCAL1: *top++ = *(base + 1); break;
+            case PUSHLOCAL2: *top++ = *(base + 2); break;
+            case PUSHLOCAL3: *top++ = *(base + 3); break;
+            case PUSHLOCAL4: *top++ = *(base + 4); break;
+            case PUSHLOCAL5: *top++ = *(base + 5); break;
+            case PUSHLOCAL6: *top++ = *(base + 6); break;
+            case PUSHLOCAL7: *top++ = *(base + 7); break;
+            case PUSHLOCAL8: *top++ = *(base + 8); break;
+            case PUSHLOCAL9: *top++ = *(base + 9); break;
+            case PUSHLOCAL: *top++ = *(base + (*pc++)); break;
+            case PUSHGLOBAL:
+                *top++ = s_object(*((Word *) (pc))); pc += sizeof(Word); break;
+            case PUSHINDEXED:
+                --top;
+                if (tag(top - 1) != T_ARRAY) {
+                    lua_reportbug("indexed expression not a table");
+                    return 1;
+                }
+                {
+                    Object *h = lua_hashdefine(avalue(top-1), top);
+                    if (h == NULL) return 1;
+                    *(top - 1) = *h;
+                }
+                break;
         }
     }
 }
