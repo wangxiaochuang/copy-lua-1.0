@@ -1,6 +1,10 @@
 #ifndef opcode_h
 #define opcode_h
 
+#ifndef STACKGAP
+#define STACKGAP	128
+#endif 
+
 #ifndef real
 #define real float
 #endif
@@ -69,6 +73,8 @@ typedef enum {
 } Type;
 
 typedef void (*Cfunction) (void);
+typedef int (*Input) (void);
+typedef void (*Unput) (int);
 
 typedef union {
     Cfunction   f;

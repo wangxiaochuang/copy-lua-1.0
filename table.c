@@ -13,13 +13,13 @@
 #define MAXSYMBOL   512
 #endif
 
-static Symbol tablebuffer[MAXSYMBOL] {
+static Symbol tablebuffer[MAXSYMBOL] = {
     { "type", { T_CFUNCTION, { lua_type } } },
     { "tonumber", { T_CFUNCTION, { lua_obj2number } } },
     { "next", { T_CFUNCTION, { lua_next } } },
     { "nextvar", { T_CFUNCTION, { lua_nextvar } } },
     { "print", { T_CFUNCTION, { lua_print } } },
-}
+};
 Symbol              *lua_table = tablebuffer;
 Word                lua_ntable=5;
 
@@ -28,7 +28,7 @@ Word                lua_ntable=5;
 #endif
 static char     *constantbuffer[MAXCONSTANT] = {
     "mark", "nil", "number", "string", "table", "function", "cfunction"
-}
+};
 char            **lua_constant = constantbuffer;
 Word            lua_nconstant = T_CFUNCTION + 1;
 
@@ -45,6 +45,10 @@ Word            lua_nstring = 0;
 static Hash     *arraybuffer[MAXARRAY];
 Hash            **lua_array = arraybuffer;
 Word            lua_narray = 0;
+
+#define MAXFILE 20
+char            *lua_file[MAXFILE];
+int             lua_nfile;
 
 int lua_findsymbol(char *s) {
     int i;
@@ -114,4 +118,29 @@ char *lua_createstring(char *s) {
     }
     lua_string[lua_nstring++] = s;
     return s;
+}
+
+void *lua_createarray(void *a) {
+    if (a == NULL) return NULL;
+    if (lua_narray >= MAXARRAY - 1) {
+        lua_pack();
+        if (lua_narray >= MAXARRAY - 1) {
+            lua_error("indexed table overflow");
+            return NULL;
+        }
+    }
+    lua_array[lua_narray++] = a;
+    return a;
+}
+
+int lua_addfile(char *fn) {
+    if (lua_nfile >= MAXFILE - 1) {
+        lua_error("too many files");
+        return 1;
+    }
+    if ((lua_file[lua_nfile++] = strdup(fn)) == NULL) {
+        lua_error("not enough memory");
+        return 1;
+    }
+    return 0;
 }

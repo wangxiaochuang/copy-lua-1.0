@@ -3,4 +3,6 @@
 
 #define lua_markstring(s)   (*((s) - 1))
 
+int   lua_addfile              (char *fn);
+
 #endif

@@ -15,4 +15,11 @@ typedef struct Hash {
 
 #define markarray(t)        ((t)->mark)
 
+Hash 	*lua_hashcreate (unsigned int nhash);
+void 	 lua_hashdelete (Hash *h);
+Object 	*lua_hashdefine (Hash *t, Object *ref);
+void 	 lua_hashmark   (Hash *h);
+
+void     lua_next (void);
+
 #endif
