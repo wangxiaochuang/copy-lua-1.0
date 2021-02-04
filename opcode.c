@@ -6,6 +6,8 @@
 #endif
 #include "opcode.h"
 #include "hash.h"
+#include "inout.h"
+#include "table.h"
 #include "lua.h"
 
 #define tonumber(o) ((tag(o) != T_NUMBER) && (lua_tonumber(o) != 0))
